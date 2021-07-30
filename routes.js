@@ -90,4 +90,8 @@ router.post("/:id/add-reservation/", async function (req, res, next) {
   return res.redirect(`/${customerId}/`);
 });
 
+router.get("/best/", async function (req, res, next) {
+
+})
+
 module.exports = router;
