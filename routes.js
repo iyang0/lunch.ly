@@ -39,6 +39,7 @@ router.get("/:id/", async function (req, res, next) {
 
   const reservations = await customer.getReservations();
 
+  console.log(customer.fullName())
   return res.render("customer_detail.html", { customer, reservations });
 });
 
