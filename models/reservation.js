@@ -17,6 +17,7 @@ class Reservation {
     this.notes = notes;
   }
   
+  /** Set numGuests. Throws error if number of guest is < 1 */
   set numGuests(num){
       if(num<1){
           throw new BadRequestError("There must be at least one guest.")
@@ -24,8 +25,23 @@ class Reservation {
       this._numGuests = num;
   }
   
+  /** Get numGuests. */
   get numGuests(){
       return this._numGuests;
+  }
+
+  /** Set startAt. If not a Date, throws error. */
+  set startAt(date) {
+    let newDate = new Date(date);
+    if(newDate.toString() === "Invalid Date") {
+      throw new BadRequestError("Must be a date.")
+    } 
+    this._startAt = new Date(date);
+  }
+
+  /** Get startAt. */
+  get startAt() {
+    return this._startAt;
   }
 
   /** formatter for startAt */
@@ -80,6 +96,30 @@ class Reservation {
     }
   }
   
+  /** get a reservation by ID. */
+
+  static async get(id) {
+    const results = await db.query(
+          `SELECT id,
+              customer_id AS "customerId",
+              num_guests AS "numGuests",
+              start_at AS "startAt",
+              notes AS "notes"
+           FROM reservations
+           WHERE id = $1`,
+        [id],
+    );
+
+    const reservation = results.rows[0];
+
+    if (reservation === undefined) {
+      const err = new Error(`No such reservation: ${id}`);
+      err.status = 404;
+      throw err;
+    }
+
+    return new Reservation(reservation);
+  }
 }
 
 
