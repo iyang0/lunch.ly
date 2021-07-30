@@ -41,7 +41,7 @@ class Reservation {
   }
   
   /** groups customer by id and returns the top 10 customers with the most reservations. */
-  static async getNumberOfReservationsByCustomer(customerId) {
+  /* static async getNumberOfReservationsByCustomer(customerId) {
     const results = await db.query(
           `SELECT customer_id AS "customerId", COUNT(*)
            FROM reservations
@@ -50,7 +50,7 @@ class Reservation {
            LIMIT 10`);
 
     return results.rows.map(row => new Reservation(row));
-  }
+  } */
 
   
   /** save this reservation. */

@@ -19,7 +19,7 @@ router.get("/", async function (req, res, next) {
   }else{
     customers = await Customer.search(search);
   }
-  //TODO add the search bar to base.html
+
   return res.render("customer_list.html", { customers });
 });
 
@@ -91,7 +91,10 @@ router.post("/:id/add-reservation/", async function (req, res, next) {
 });
 
 router.get("/best/", async function (req, res, next) {
-
+  const customers = await Customer.getBestCustomers();
+  console.log(customers);
+  
+  return res.render("customer_list.html", { customers });
 })
 
 module.exports = router;

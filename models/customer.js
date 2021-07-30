@@ -64,11 +64,24 @@ class Customer {
 
   /** get top 10 customers with most reservations. */
 
-  async getBestCustomers() {
-    const reservationResults = await Reservation.getNumberOfReservationsByCustomer();
-    const reservation = reservationResults.rows.map(r => r.customerId);
-
+  static async getBestCustomers() {
+    const results = await db.query(
+      `
+       SELECT id,
+              first_name AS "firstName",
+              last_name  AS "lastName",
+              phone,
+              notes
+       FROM customers
+       WHERE customers.id IN (SELECT customer_id AS "customerId"
+           FROM reservations
+           GROUP BY customer_id
+           ORDER BY COUNT(*) DESC
+           LIMIT 10)
+      `
+    );
     
+    return results.rows.map(c => new Customer(c));
   }
 
   /** save this customer. */
