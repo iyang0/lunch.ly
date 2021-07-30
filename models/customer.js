@@ -20,13 +20,19 @@ class Customer {
 
   static async all() {
     const results = await db.query(
-          `SELECT id,
+          `SELECT customers.id,
                   first_name AS "firstName",
                   last_name  AS "lastName",
                   phone,
-                  notes
-           FROM customers
-           ORDER BY last_name, first_name`,
+                  customers.notes, 
+                  MAX(start_at) AS "latestReservation"
+    FROM customers LEFT JOIN reservations ON customer_id = customers.id
+    GROUP BY customers.id, 
+      first_name, 
+      last_name, 
+      phone, 
+      customers.notes
+    ORDER BY last_name, first_name;`,
     );
     return results.rows.map(c => new Customer(c));
   }
@@ -72,6 +78,7 @@ class Customer {
               last_name  AS "lastName",
               phone,
               customers.notes
+              MAX(start_at) AS "latestReservation"
       FROM customers JOIN reservations ON customer_id = customers.id
       GROUP BY customers.id, first_name, last_name, phone, customers.notes
       ORDER BY COUNT(*) DESC
@@ -128,9 +135,11 @@ class Customer {
                   last_name  AS "lastName",
                   phone,
                   notes
-           FROM customers
+                  MAX(start_at) AS "latestReservation"
+           FROM customers JOIN reservations ON customer_id = customers.id
            WHERE lower(first_name) LIKE lower($1) 
               OR lower(last_name) LIKE lower($1)
+           GROUP BY customers.id, first_name, last_name, phone, customers.notes
            ORDER BY last_name, first_name`,
         [`%${searchTerm}%`]
     );

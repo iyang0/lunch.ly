@@ -19,7 +19,7 @@ router.get("/", async function (req, res, next) {
   }else{
     customers = await Customer.search(search);
   }
-
+  console.log(customers[0]);
   return res.render("customer_list.html", { customers });
 });
 
