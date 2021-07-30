@@ -44,7 +44,8 @@ class Customer {
     if(!date){
         this._latestReservation = null;
     } else {
-      this._latestReservation = moment(date).format("MMMM Do YYYY, h:mm a");;
+      // this._latestReservation = moment(date).format("MMMM Do YYYY, h:mm a");
+      this._latestReservation = moment(date).fromNow();
     }
 }
 
@@ -57,13 +58,20 @@ get latestReservation(){
 
   static async get(id) {
     const results = await db.query(
-          `SELECT id,
+          `SELECT customers.id,
                   first_name AS "firstName",
                   last_name  AS "lastName",
                   phone,
-                  notes
-           FROM customers
-           WHERE id = $1`,
+                  customers.notes,
+                  MAX(start_at) AS "latestReservation"
+           FROM customers LEFT JOIN reservations ON customer_id = customers.id
+           WHERE customers.id = $1
+           GROUP BY customers.id, 
+            first_name, 
+            last_name, 
+            phone, 
+            customers.notes
+           `,
         [id],
     );
 
