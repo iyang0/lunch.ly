@@ -12,7 +12,14 @@ const router = new express.Router();
 /** Homepage: show list of customers. */
 
 router.get("/", async function (req, res, next) {
-  const customers = await Customer.all();
+  let search = req.query.search;
+  let customers;
+  if(!search){
+    customers = await Customer.all();
+  }else{
+    customers = await Customer.search(search);
+  }
+  //TODO add the search bar to base.html
   return res.render("customer_list.html", { customers });
 });
 

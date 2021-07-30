@@ -91,8 +91,29 @@ class Customer {
     }
   }
   
+  /* 
+  Instance method to return a string containing their full name
+  */
   fullName(){
     return `${this.firstName} ${this.lastName}`;
+  }
+  
+  /* takes in a term to search for customers' names by
+    returns an array of customers with the term in their name.
+  */
+  static async search(searchTerm){
+    const results = await db.query(
+          `SELECT id,
+                  first_name AS "firstName",
+                  last_name  AS "lastName",
+                  phone,
+                  notes
+           FROM customers
+           WHERE first_name OR last_name LIKE $1 
+           ORDER BY last_name, first_name`,
+        [`%${searchTerm}%`]
+    );
+    return results.rows.map(c => new Customer(c));
   }
   
 }
