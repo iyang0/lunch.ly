@@ -4,16 +4,18 @@
 
 const db = require("../db");
 const Reservation = require("./reservation");
+const moment = require("moment");
 
 /** Customer of the restaurant. */
 
 class Customer {
-  constructor({ id, firstName, lastName, phone, notes }) {
+  constructor({ id, firstName, lastName, phone, notes, latestReservation }) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.phone = phone;
     this.notes = notes;
+    this.latestReservation = latestReservation
   }
 
   /** find all customers. */
@@ -36,6 +38,20 @@ class Customer {
     );
     return results.rows.map(c => new Customer(c));
   }
+
+  /** Set latestReservation. If none, sets it to null. */
+  set latestReservation(date){
+    if(!date){
+        this._latestReservation = null;
+    } else {
+      this._latestReservation = moment(date).format("MMMM Do YYYY, h:mm a");;
+    }
+}
+
+/** Get latestReservation. */
+get latestReservation(){
+    return this._latestReservation;
+}
 
   /** get a customer by ID. */
 
@@ -77,7 +93,7 @@ class Customer {
               first_name AS "firstName",
               last_name  AS "lastName",
               phone,
-              customers.notes
+              customers.notes,
               MAX(start_at) AS "latestReservation"
       FROM customers JOIN reservations ON customer_id = customers.id
       GROUP BY customers.id, first_name, last_name, phone, customers.notes
@@ -130,13 +146,13 @@ class Customer {
   */
   static async search(searchTerm){
     const results = await db.query(
-          `SELECT id,
+          `SELECT customers.id,
                   first_name AS "firstName",
                   last_name  AS "lastName",
                   phone,
-                  notes
+                  customers.notes,
                   MAX(start_at) AS "latestReservation"
-           FROM customers JOIN reservations ON customer_id = customers.id
+           FROM customers LEFT JOIN reservations ON customer_id = customers.id
            WHERE lower(first_name) LIKE lower($1) 
               OR lower(last_name) LIKE lower($1)
            GROUP BY customers.id, first_name, last_name, phone, customers.notes
