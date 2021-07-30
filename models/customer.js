@@ -109,7 +109,8 @@ class Customer {
                   phone,
                   notes
            FROM customers
-           WHERE first_name OR last_name LIKE $1 
+           WHERE lower(first_name) LIKE lower($1) 
+              OR lower(last_name) LIKE lower($1)
            ORDER BY last_name, first_name`,
         [`%${searchTerm}%`]
     );
