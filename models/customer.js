@@ -114,7 +114,7 @@ class Customer {
   /* 
   Instance method to return a string containing their full name
   */
-  fullName(){
+  get fullName(){
     return `${this.firstName} ${this.lastName}`;
   }
   

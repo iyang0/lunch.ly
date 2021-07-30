@@ -3,7 +3,7 @@
 /** Reservation for Lunchly */
 
 const moment = require("moment");
-
+const { BadRequestError } = require("../expressError");
 const db = require("../db");
 
 /** A reservation for a party */
@@ -15,6 +15,17 @@ class Reservation {
     this.numGuests = numGuests;
     this.startAt = startAt;
     this.notes = notes;
+  }
+  
+  set numGuests(num){
+      if(num<1){
+          throw new BadRequestError("There must be at least one guest.")
+      }
+      this._numGuests = num;
+  }
+  
+  get numGuests(){
+      return this._numGuests;
   }
 
   /** formatter for startAt */
