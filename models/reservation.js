@@ -40,19 +40,6 @@ class Reservation {
     return results.rows.map(row => new Reservation(row));
   }
   
-  /** groups customer by id and returns the top 10 customers with the most reservations. */
-  /* static async getNumberOfReservationsByCustomer(customerId) {
-    const results = await db.query(
-          `SELECT customer_id AS "customerId", COUNT(*)
-           FROM reservations
-           GROUP BY customer_id
-           ORDER BY COUNT(*) DESC
-           LIMIT 10`);
-
-    return results.rows.map(row => new Reservation(row));
-  } */
-
-  
   /** save this reservation. */
 
   async save() {
