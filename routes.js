@@ -42,8 +42,7 @@ router.post("/add/", async function (req, res, next) {
 /** Shows the top 10 customers with the most reservations */
 router.get("/best/", async function (req, res, next) {
   const customers = await Customer.getBestCustomers();
-  console.log(customers);
-  
+
   return res.render("customer_list.html", { customers });
 })
 
@@ -54,7 +53,6 @@ router.get("/:id/", async function (req, res, next) {
 
   const reservations = await customer.getReservations();
 
-  console.log(customer.fullName())
   return res.render("customer_detail.html", { customer, reservations });
 });
 

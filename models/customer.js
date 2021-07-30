@@ -59,7 +59,7 @@ class Customer {
   /** get all reservations for this customer. */
 
   async getReservations() {
-     await Reservation.getReservationsForCustomer(this.id);
+    return await Reservation.getReservationsForCustomer(this.id);
   }
 
   /** get top 10 customers with most reservations. */
