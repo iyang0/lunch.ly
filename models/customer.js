@@ -59,7 +59,16 @@ class Customer {
   /** get all reservations for this customer. */
 
   async getReservations() {
-    return await Reservation.getReservationsForCustomer(this.id);
+     await Reservation.getReservationsForCustomer(this.id);
+  }
+
+  /** get top 10 customers with most reservations. */
+
+  async getBestCustomers() {
+    const reservationResults = await Reservation.getNumberOfReservationsByCustomer();
+    const reservation = reservationResults.rows.map(r => r.customerId);
+
+    
   }
 
   /** save this customer. */
