@@ -67,17 +67,15 @@ class Customer {
   static async getBestCustomers() {
     const results = await db.query(
       `
-       SELECT id,
+      SELECT customers.id,
               first_name AS "firstName",
               last_name  AS "lastName",
               phone,
-              notes
-       FROM customers
-       WHERE customers.id IN (SELECT customer_id AS "customerId"
-           FROM reservations
-           GROUP BY customer_id
-           ORDER BY COUNT(*) DESC
-           LIMIT 10)
+              customers.notes
+      FROM customers JOIN reservations ON customer_id = customers.id
+      GROUP BY customers.id, first_name, last_name, phone, customers.notes
+      ORDER BY COUNT(*) DESC
+      LIMIT 10
       `
     );
     
